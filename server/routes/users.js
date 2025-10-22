@@ -74,16 +74,17 @@ router.post("/login", async (req, res) => {
 
 router.get("/check-auth", (req, res) => {
   const token = req.cookies.token;
-  if (!token) return res.sendStatus(401);
-  console.log(token);
-  
+  if (!token) return res.status(401).json({ isAuthenticated: false });
+
   try {
     jwt.verify(token, process.env.JWT_SECRET);
-    res.status(201).json({ message: "authenticated" });
+    res.status(200).json({ isAuthenticated: true });
   } catch (err) {
     console.error(err);
-    res.sendStatus(401);
+    res.status(401).json({ isAuthenticated: false });
   }
 });
+
+
 
 module.exports = router;

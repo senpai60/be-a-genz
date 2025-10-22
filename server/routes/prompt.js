@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const verifyUser = require("../middlewares/verifyUser")
+
+const Archived = require('../models/Archived')
+
 require("dotenv").config();
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY; // ❗ variable name fix (was geminiApi)
@@ -73,5 +77,31 @@ router.post("/translate-genz", async (req, res) => {
     return res.status(500).json({ message: "Gemini request failed." });
   }
 });
+
+router.post("/add-to-archive", verifyUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { word, sentence, meaning } = req.body; // destructure everything
+
+    if (!word || !sentence || !meaning)
+      return res.status(400).json({ message: "Please provide word, useCase and meaning." });
+
+    const wordExist = await Archived.findOne({ word, user: userId }); // check for user-specific duplicates
+    if (wordExist)
+      return res.status(409).json({ message: "You already saved this word!" });
+
+    const newWord = await Archived.create({
+      word,
+      sentence,
+      meaning,
+      user: userId,
+    });
+
+    res.status(201).json({ message: "Word archived!", data: newWord });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 
 module.exports = router;
