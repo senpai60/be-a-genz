@@ -3,12 +3,14 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
+const connectDB = require('./utils/db')
 require("dotenv").config();
 
 const indexRouter = require("./routes/index");
 
 const app = express();
 
+connectDB()
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

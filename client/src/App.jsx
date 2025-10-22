@@ -15,11 +15,12 @@ function App() {
   ];
 
   const menuItems = [
-    { label: "Profile", pageName: "profile", component: <div>Profile Page</div> },
-    { label: "Settings", pageName: "settings", component: <div>Settings Page</div> },
-    { label: "Logout", pageName: "logout", component: <div>Logged Out</div> },
-    { label: "Login/Signup", pageName: "auth", component: <Auth/> },
-  ];
+  { label: "Profile", pageName: "profile", component: <div>Profile Page</div> },
+  { label: "Settings", pageName: "settings", component: <div>Settings Page</div> },
+  { label: "Logout", pageName: "logout", component: <div>Logged Out</div> },
+  { label: "Login/Signup", pageName: "login", component: <Auth /> }, // 👈 FIXED: not "logout"
+];
+
 
   const [currentPage, setCurrentPage] = useState("use ai");
 

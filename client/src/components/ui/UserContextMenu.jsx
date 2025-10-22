@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import useAuthCheck from "../../utils/useAuthCheck";
+import { useAuth } from "../../context/AuthContext";
 
 function UserContextMenu({ menuItems = [], navigateToMenuPage, currentPage, icon }) {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef();
-  const isLoggedIn = useAuthCheck();
+  const { isLoggedIn, logout } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -18,6 +18,7 @@ function UserContextMenu({ menuItems = [], navigateToMenuPage, currentPage, icon
 
   const handleMenuClick = (item) => {
     if (item.pageName === "logout") {
+      logout(); // instantly updates UI
       console.log("Handle logout here");
     } else {
       navigateToMenuPage(item.pageName);
@@ -37,9 +38,11 @@ function UserContextMenu({ menuItems = [], navigateToMenuPage, currentPage, icon
           className="absolute right-0 mt-2 w-48 bg-zinc-900 text-zinc-100 shadow-lg border border-zinc-700 rounded-md z-50"
         >
           <ul>
-            {isLoggedIn
-              ? // 🔹 If logged in → show all items except the last one (Login)
-                menuItems.slice(0, menuItems.length - 1).map((item, idx) => (
+            {isLoggedIn ? (
+              // 🟢 Show all except login
+              menuItems
+                .filter((item) => item.pageName !== "login")
+                .map((item, idx) => (
                   <li
                     key={idx}
                     className={`px-4 py-2 hover:bg-zinc-800 cursor-pointer transition-colors ${
@@ -50,21 +53,24 @@ function UserContextMenu({ menuItems = [], navigateToMenuPage, currentPage, icon
                     {item.label}
                   </li>
                 ))
-              : // 🔹 If NOT logged in → show ONLY the last item (Login)
-                (() => {
-                  const loginItem = menuItems[menuItems.length - 1];
-                  return (
-                    <li
-                      key="login"
-                      className={`px-4 py-2 hover:bg-zinc-800 cursor-pointer transition-colors ${
-                        currentPage === loginItem.pageName ? "bg-zinc-800 text-green-400" : ""
-                      }`}
-                      onClick={() => handleMenuClick(loginItem)}
-                    >
-                      {loginItem.label}
-                    </li>
-                  );
-                })()}
+            ) : (
+              // 🔴 Only show login item if it exists
+              (() => {
+                const loginItem = menuItems.find((item) => item.pageName === "login");
+                if (!loginItem) return <li className="px-4 py-2 text-zinc-400">No login option</li>;
+                return (
+                  <li
+                    key="login"
+                    className={`px-4 py-2 hover:bg-zinc-800 cursor-pointer transition-colors ${
+                      currentPage === loginItem.pageName ? "bg-zinc-800 text-green-400" : ""
+                    }`}
+                    onClick={() => handleMenuClick(loginItem)}
+                  >
+                    {loginItem.label}
+                  </li>
+                );
+              })()
+            )}
           </ul>
         </div>
       )}
