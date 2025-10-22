@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@import "tailwindcss";
+
+html,
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Anton", sans-serif;
+  /* bold headlines */
+  font-weight: 700;
+  /* can adjust if needed */
+}
+
+/* Paragraphs */
+p {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 400;
+  /* normal weight */
+}
+
+/* Buttons */
+button {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  /* semi-bold for emphasis */
+}
+
+/* Links */
+a {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Labels and small text */
+label,
+span,
+small {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 400;
+}
+
+/* Inputs and textareas */
+input,
+textarea,
+select {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 400;
+}
+
+/* Lists */
+ul,
+ol,
+li {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 400;
+}
+
+/* Strong and bold text */
+strong,
+b {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+}
+
+/* Italics/emphasized text */
+em,
+i {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 400;
+}
