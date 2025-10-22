@@ -8,10 +8,12 @@ router.get('/', function(req, res, next) {
 
 // Imports all the routes here=-====
 const promptRoute = require('./prompt')
+const usersRoute = require('./users');
 
 
 // user routes here
 router.use('/prompt',promptRoute)
+router.use('/users',usersRoute)
 
 
 

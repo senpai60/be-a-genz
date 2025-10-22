@@ -22,13 +22,15 @@ router.post("/register", async (req, res) => {
     });
     const id = newUser._id;
     const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-      expiresIn: '3h',
+      expiresIn: "3h",
     });
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 3, // 3 hours
       httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
     });
-    res.status(201)
+    res.status(201);
   } catch (err) {
     console.error(err);
     res
@@ -38,17 +40,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Login
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
 
-  if (!user) return res.status(400).json({ message: "User not found" });
-
-  const isMatch = await user.comparePassword(password); // ✅ use schema method
-  if (!isMatch) return res.status(401).json({ message: "Invalid password" });
-
-  res.status(200).json({ message: "Login successful!" });
-});
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -68,6 +60,8 @@ router.post("/login", async (req, res) => {
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 3,
       httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
     });
 
     // ✅ Optional: Send JSON for frontend info
@@ -78,5 +72,16 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/check-auth", (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.sendStatus(401);
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+    res.status(201).json({ message: "authenticated" });
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(401);
+  }
+});
 
 module.exports = router;
