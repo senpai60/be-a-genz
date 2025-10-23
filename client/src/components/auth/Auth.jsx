@@ -1,26 +1,31 @@
 import { useState } from "react";
 import ButtonPrimary from "../ui/ButtonPrimary";
 import { useAuth } from "../../context/AuthContext";
-import authApi from "../../utils/authApi"; // ✅ MISSING IMPORT ADDED
+import authApi from "../../utils/authApi";
+import Toast from "../ui/Toast";
 
 function Auth() {
-  const { login } = useAuth(); // ✅ from context
+  const { login } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-  const [message, setMessage] = useState("");
+  const [toast, setToast] = useState(null);
 
   const handleToggle = (type) => {
     setIsLogin(type === "login");
-    setMessage("");
+    setToast(null);
     setFormData({ username: "", email: "", password: "" });
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
   };
 
   const handleSubmit = async (e) => {
@@ -48,12 +53,11 @@ function Auth() {
         );
       }
 
-      // ✅ update context instantly
-      login();
-      setMessage(res.data.message || (isLogin ? "Login successful!" : "Signup successful!"));
+      login(); // update context instantly
+      showToast(res.data.message || (isLogin ? "Login successful!" : "Signup successful!"), "success");
     } catch (err) {
       console.error(err);
-      setMessage(err.response?.data?.message || "Something went wrong!");
+      showToast(err.response?.data?.message || "Something went wrong!", "error");
     }
   };
 
@@ -120,12 +124,17 @@ function Auth() {
           >
             {isLogin ? "Login" : "Signup"}
           </ButtonPrimary>
-
-          {message && (
-            <p className="text-center text-sm mt-2 text-green-400">{message}</p>
-          )}
         </form>
       </div>
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={() => setToast(null)}
+        />
+      )}
     </section>
   );
 }

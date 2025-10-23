@@ -76,3 +76,7 @@ i {
   font-family: "Barlow Condensed", sans-serif;
   font-weight: 400;
 }
+
+.toast{
+  z-index: 999;
+}

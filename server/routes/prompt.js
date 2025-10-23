@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-const verifyUser = require("../middlewares/verifyUser")
+const verifyUser = require("../middlewares/verifyUser");
 
-const Archived = require('../models/Archived')
+const Archived = require("../models/Archived");
 
 require("dotenv").config();
 
@@ -78,13 +78,30 @@ router.post("/translate-genz", async (req, res) => {
   }
 });
 
+router.get("/archived-word", verifyUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Fetch only word and _id
+    const archiveList = await Archived.find({ user: userId }).select("word _id");
+
+    res.status(200).json({ status: "success", archiveList });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: "error", message: "Server error" });
+  }
+});
+
+
 router.post("/add-to-archive", verifyUser, async (req, res) => {
   try {
     const userId = req.user.id;
     const { word, sentence, meaning } = req.body; // destructure everything
 
     if (!word || !sentence || !meaning)
-      return res.status(400).json({ message: "Please provide word, useCase and meaning." });
+      return res
+        .status(400)
+        .json({ message: "Please provide word, useCase and meaning." });
 
     const wordExist = await Archived.findOne({ word, user: userId }); // check for user-specific duplicates
     if (wordExist)
@@ -102,6 +119,5 @@ router.post("/add-to-archive", verifyUser, async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
-
 
 module.exports = router;

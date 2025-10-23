@@ -30,7 +30,7 @@ router.post("/register", async (req, res) => {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
     });
-    res.status(201);
+    res.status(201).json({ message: "Signup successful!" });
   } catch (err) {
     console.error(err);
     res
@@ -83,6 +83,15 @@ router.get("/check-auth", (req, res) => {
     console.error(err);
     res.status(401).json({ isAuthenticated: false });
   }
+});
+
+router.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  res.status(200).json({ message: "Logged out successfully!" });
 });
 
 

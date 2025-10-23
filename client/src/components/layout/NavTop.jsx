@@ -17,7 +17,7 @@ function NavTop({
     setGlobalSearchValue(updatedValue);
   };
   return (
-    <nav className="w-[80%] h-20 fixed z-999 right-0 top-0 p-4 flex justify-between items-center border-b border-b-zinc-800">
+    <nav className="w-[80%] h-20 fixed z-50 right-0 top-0 p-4 flex justify-between items-center border-b border-b-zinc-800">
       <div className="nav-links flex items-center gap-4 text-[1.2rem] capitalize">
         {navLinks.map((linkText, linkIndex) => (
           <NavigationLink
