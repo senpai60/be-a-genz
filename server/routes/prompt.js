@@ -95,6 +95,7 @@ router.get("/archived-word", verifyUser, async (req, res) => {
 
 router.post("/add-to-archive", verifyUser, async (req, res) => {
   try {
+
     const userId = req.user.id;
     const { word, sentence, meaning } = req.body; // destructure everything
 
@@ -119,5 +120,7 @@ router.post("/add-to-archive", verifyUser, async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
+
 
 module.exports = router;

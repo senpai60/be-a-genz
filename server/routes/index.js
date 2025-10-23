@@ -9,11 +9,15 @@ router.get('/', function(req, res, next) {
 // Imports all the routes here=-====
 const promptRoute = require('./prompt')
 const usersRoute = require('./users');
+const injectionRoute = require('./dataInjection')
+const wordsRoute =require('./words')
 
 
 // user routes here
 router.use('/prompt',promptRoute)
 router.use('/users',usersRoute)
+router.use('/inject',injectionRoute)
+router.use('/words',wordsRoute)
 
 
 
