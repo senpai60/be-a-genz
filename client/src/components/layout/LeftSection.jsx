@@ -12,8 +12,6 @@ function LeftSection() {
       if (!isLoggedIn) return;
       try {
         const response = await promptApi.get("/archived-word");
-        console.log(response.data);
-
         setArchivedWords(response.data.archiveList || []);
       } catch (err) {
         console.error(err);
@@ -23,13 +21,12 @@ function LeftSection() {
   }, [isLoggedIn, loading]);
 
   let content;
-
   if (loading) {
     content = <p>Loading...</p>;
   } else if (!isLoggedIn) {
     content = <p>Please login to view archived words</p>;
   } else if (archivedWords.length === 0) {
-    content = <p>Please add some words to archive</p>;
+    content = <p>No archived words yet</p>;
   } else {
     content = archivedWords.map((archivedWord) => (
       <SavedWordButton key={archivedWord._id}>
@@ -39,13 +36,11 @@ function LeftSection() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[20%] hidden md:hidden lg:flex flex-col border-r border-r-zinc-800 p-4 items-start">
-      <div className="header mb-4 text-2xl tracking-wide capitalize">
+    <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-[20%] flex-col border-r border-r-zinc-800 p-4 items-start bg-zinc-950 z-40">
+      <div className="header mb-4 text-xl lg:text-2xl tracking-wide capitalize">
         Be A Genz!
       </div>
-      <div className="saved-words flex flex-wrap gap-2 col-end-3">
-        {content}
-      </div>
+      <div className="saved-words flex flex-wrap gap-2">{content}</div>
     </aside>
   );
 }

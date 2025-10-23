@@ -27,7 +27,7 @@ function Toast({ type = "success", message, onClose, duration = 3000 }) {
   const style = typeStyles[type] || typeStyles.success;
 
   return (
-    <div className="fixed inset-0 z-[999] flex justify-end items-start p-4 pointer-events-none">
+    <div className="fixed inset-0 z-999 flex justify-end items-start p-4 pointer-events-none">
       <div
         className={`flex items-center gap-3 p-3 rounded-lg border shadow-lg pointer-events-auto ${style.bg} ${style.text}`}
       >

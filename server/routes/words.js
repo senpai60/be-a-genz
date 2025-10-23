@@ -1,21 +1,24 @@
-const express = require('express')
-const router = express.Router()
-const HgSlang = require('../models/HgSlangData')
-
-router.get('/random-words',async(req,res)=>{
-  let randomWords= []
+const express = require("express");
+const router = express.Router();
+const HgSlang = require("../models/HgSlangData");
+const getWordMood = require("../utils/getWordMood");
+router.get("/random-words", async (req, res) => {
+  let randomWordsData = [];
 
   try {
-    const allWords = await HgSlang.find({})
-    
-    for (let i = 0; i < 10; i++) {
-    const randomIndex = Math.floor(Math.random()*allWords.length+1)
-    randomWords.push(allWords[randomIndex])
-  }
-  res.status(201).json({randomWords})
-  } catch (err) {
-    console.error(err)
-  }
-})
+    const allWords = await HgSlang.find({});
 
-module.exports = router
+    for (let i = 0; i < 30; i++) {
+      const randomIndex = Math.floor(Math.random() * allWords.length);
+      const randomWord = allWords[randomIndex];
+      const randomWordMood = getWordMood(randomWord.sentence);
+      const randomWordData = { wordData: randomWord, wordMood: randomWordMood };
+      randomWordsData.push(randomWordData);
+    }
+    res.status(201).json({ randomWordsData });
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+module.exports = router;
