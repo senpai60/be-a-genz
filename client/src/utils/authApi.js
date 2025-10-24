@@ -6,7 +6,9 @@ const authApi = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials:true
+  withCredentials: true,
+  // Prevent long hangs in production when the backend is unreachable.
+  timeout: 5000,
 });
 
 export default authApi;
