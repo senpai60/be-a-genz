@@ -5,6 +5,10 @@ import ResponseOutput from '../UseUi/ResponseOutput';
 
 function UseAi() {
   const [genzResponse, setGenzResponse] = useState(null);
+  
+  // 1. DEFINE the loading state here
+  const [isLoading, setIsLoading] = useState(false); 
+  
   const [promptType, setPromptType] = useState("sentence");
   const [isSentencePrompt, setIsSentencePrompt] = useState(true);
 
@@ -20,6 +24,7 @@ function UseAi() {
 
   return (
     <section className='p-4 w-full'>
+      {/* ...your h1 and ButtonPrimary components... */}
       <h1 className='text-3xl sm:text-4xl md:text-5xl text-zinc-800 tracking-wide mb-6'>
         Get more GENZ words, meanings, and modern sentences from the sentence you like!
       </h1>
@@ -45,14 +50,30 @@ function UseAi() {
         {/* LEFT - Prompt Form */}
         <div className="left w-full md:w-1/2">
           {isSentencePrompt 
-            ? <PromptForm setGenzResponse={setGenzResponse} promptType={promptType} /> 
-            : <PromptForm promptType={promptType} />
+            ? <PromptForm 
+                setGenzResponse={setGenzResponse} 
+                promptType={promptType} 
+                // 2. PASS the state and setter down
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+              /> 
+            : <PromptForm 
+                promptType={promptType} 
+                // (Also pass here in case your 'word' prompt also generates)
+                setGenzResponse={setGenzResponse} 
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+              />
           }
         </div>
 
         {/* RIGHT - Response Output */}
         <div className="right w-full md:w-1/2 mt-4 md:mt-0">
-          <ResponseOutput genzResponse={genzResponse} />
+          {/* 3. PASS the loading state down to show the loader */}
+          <ResponseOutput 
+            genzResponse={genzResponse} 
+            isLoading={isLoading} 
+          />
         </div>
       </div>
     </section>

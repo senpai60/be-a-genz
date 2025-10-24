@@ -1,9 +1,12 @@
 import React from 'react'
 
-function GenerateAi({ children, handleGeneration, inputSentenceValue }) {
+// 1. Accept 'disabled' prop
+function GenerateAi({ children, handleGeneration, inputSentenceValue, disabled }) {
   return (
     <button 
       onClick={() => handleGeneration(inputSentenceValue)}
+      // 2. Apply 'disabled' prop to the button
+      disabled={disabled}
       className="
         w-full 
         py-2 sm:py-3 
@@ -16,6 +19,9 @@ function GenerateAi({ children, handleGeneration, inputSentenceValue }) {
         hover:bg-teal-900 
         transition-all 
         active:scale-[0.97]
+        // 3. Add styling for the disabled state
+        disabled:opacity-50
+        disabled:cursor-not-allowed
       "
     >
       {children}

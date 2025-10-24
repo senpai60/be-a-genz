@@ -3,7 +3,13 @@ import TextAreaInput from "../ui/TextAreaInput";
 import GenerateAi from "./GenerateAi";
 import promptApi from "../../utils/promptApi";
 
-function PromptForm({ promptType, setGenzResponse }) {
+// 1. ACCEPT the new props
+function PromptForm({ 
+  promptType, 
+  setGenzResponse, 
+  isLoading, 
+  setIsLoading 
+}) {
   const [inputSentenceValue, setInputSentenceValue] = useState("");
 
   const handleChange = (eventValue) => {
@@ -15,6 +21,10 @@ function PromptForm({ promptType, setGenzResponse }) {
       console.log("Please enter a valid sentence.");
       return;
     }
+
+    setIsLoading(true);     // <-- 2. START loading
+    setGenzResponse(null); // <-- 3. Clear previous response
+
     try {
       const response = await promptApi.post("/translate-genz", {
         sentence: inputSentenceValue,
@@ -31,6 +41,8 @@ function PromptForm({ promptType, setGenzResponse }) {
       setGenzResponse(parsedData);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false); // <-- 4. STOP loading (on success OR error)
     }
   };
 
@@ -63,8 +75,10 @@ function PromptForm({ promptType, setGenzResponse }) {
       <GenerateAi
         inputSentenceValue={inputSentenceValue}
         handleGeneration={handleGeneration}
+        disabled={isLoading} // <-- 5. Pass disabled prop
       >
-        Generate✨
+        {/* 6. Change button text based on loading state */}
+        {isLoading ? "Generating..." : "Generate✨"}
       </GenerateAi>
     </section>
   );
