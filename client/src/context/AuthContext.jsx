@@ -7,18 +7,19 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const checkAuth = async () => {
+    try {
+      const res = await authApi.get("/check-auth");
+      setIsLoggedIn(res.data.isAuthenticated);
+    } catch {
+      setIsLoggedIn(false);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     // Check login status on app start
-    const checkAuth = async () => {
-      try {
-        const res = await authApi.get("/check-auth");
-        setIsLoggedIn(res.data.isAuthenticated);
-      } catch {
-        setIsLoggedIn(false);
-      } finally {
-        setLoading(false);
-      }
-    };
+
     checkAuth();
   }, []);
 
@@ -27,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, loading, login, logout }}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

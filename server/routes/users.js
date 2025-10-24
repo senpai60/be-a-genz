@@ -27,8 +27,8 @@ router.post("/register", async (req, res) => {
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 3, // 3 hours
       httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      secure: "true",
     });
     res.status(201).json({ message: "Signup successful!" });
   } catch (err) {
@@ -60,8 +60,8 @@ router.post("/login", async (req, res) => {
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 3,
       httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      secure: "true",
     });
 
     // ✅ Optional: Send JSON for frontend info
@@ -88,8 +88,8 @@ router.get("/check-auth", (req, res) => {
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+      secure: "true",
   });
   res.status(200).json({ message: "Logged out successfully!" });
 });
