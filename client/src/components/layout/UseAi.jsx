@@ -23,13 +23,13 @@ function UseAi() {
   };
 
   return (
-    <section className='p-4 w-full'>
-      {/* ...your h1 and ButtonPrimary components... */}
-      <h1 className='text-3xl sm:text-4xl md:text-5xl text-zinc-800 tracking-wide mb-6'>
+    <section className='md:p-4 w-full'>
+      
+      {/* <h1 className='text-3xl sm:text-4xl md:text-5xl text-zinc-800 tracking-wide mb-6'>
         Get more GENZ words, meanings, and modern sentences from the sentence you like!
-      </h1>
+      </h1> */}
 
-      <div className="btns flex flex-col sm:flex-row gap-4 py-4">
+      <div className="btns flex flex-row gap-4 py-4">
         <ButtonPrimary 
           handleClick={changePromptType} 
           selectionStyle={promptType==='sentence'?"bg-teal-950":""}

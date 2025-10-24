@@ -54,18 +54,20 @@ function PromptForm({
   return (
     <section
       className="
+      h-50  
+      md:h-full
         sentence-form 
         w-full 
         md:w-[70%] 
-        lg:w-[60%] 
+        lg:w-full 
         mx-auto 
         flex flex-col 
         gap-3 
         mt-6 
-        px-3 sm:px-4 md:px-8 
       "
     >
       <TextAreaInput
+      
         onChange={(e) => handleChange(e.target.value)}
         inputName={promptType}
         inputId={`${promptType}-prompt`}
