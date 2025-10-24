@@ -19,7 +19,7 @@ function App() {
     { label: "Profile", pageName: "profile", component: <div>Profile Page</div> },
     { label: "Settings", pageName: "settings", component: <div>Settings Page</div> },
     { label: "Logout", pageName: "logout", component: <div>Logged Out</div> },
-    { label: "Login/Signup", pageName: "login", component: <Auth /> },
+    { label: "Login/Signup", pageName: "login", component: <Auth onLoginSuccess={() => navigateToLinkPage("use ai")} /> },
   ];
 
   const [currentPage, setCurrentPage] = useState("use ai");

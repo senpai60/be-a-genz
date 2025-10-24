@@ -1,142 +1,185 @@
-import { useState } from "react";
-import ButtonPrimary from "../ui/ButtonPrimary";
+import React, { useState } from "react";
+
+// authApi is no longer needed here, we use the context functions
+
 import { useAuth } from "../../context/AuthContext";
-import authApi from "../../utils/authApi";
-import Toast from "../ui/Toast";
 
-function Auth() {
-  const { login } = useAuth();
+import { useToast } from "../ui/Toast";
+
+
+
+function Auth({ onLoginSuccess }) { // <-- 1. Accept 'onLoginSuccess' prop
+
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-  const [toast, setToast] = useState(null);
 
-  const handleToggle = (type) => {
-    setIsLogin(type === "login");
-    setToast(null);
-    setFormData({ username: "", email: "", password: "" });
-  };
+  const [username, setUsername] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [email, setEmail] = useState("");
 
-  const showToast = (message, type = "success") => {
-    setToast({ message, type });
-  };
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
+ 
+
+  const { login, register } = useAuth(); // <-- 2. Get 'login' and 'register' from useAuth
+
+  const { showToast } = useToast();
+
+
+
+  const handleLogin = async (e) => {
+
     e.preventDefault();
-    try {
-      let res;
-      if (isLogin) {
-        res = await authApi.post(
-          "/login",
-          {
-            email: formData.email,
-            password: formData.password,
-          },
-          { withCredentials: true }
-        );
-      } else {
-        res = await authApi.post(
-          "/register",
-          {
-            username: formData.username,
-            email: formData.email,
-            password: formData.password,
-          },
-          { withCredentials: true }
-        );
-      }
 
-      login(); // update context instantly
-      showToast(res.data.message || (isLogin ? "Login successful!" : "Signup successful!"), "success");
+    if (!email || !password) return showToast("Please fill all fields", "error");
+
+    try {
+
+      await login(email, password); // <-- 3. Use 'login' from context
+
+      showToast("Login Successful!");
+
+      if (onLoginSuccess) onLoginSuccess(); // <-- 4. Call prop on success
+
     } catch (err) {
-      console.error(err);
-      showToast(err.response?.data?.message || "Something went wrong!", "error");
+
+      showToast(err.response?.data?.message || "Login failed", "error");
+
     }
+
   };
+
+
+
+  const handleRegister = async (e) => {
+
+    e.preventDefault();
+
+    if (!username || !email || !password)
+
+      return showToast("Please fill all fields", "error");
+
+    try {
+
+      await register(username, email, password); // <-- 5. Use 'register' from context
+
+      showToast("Register Successful!");
+
+      if (onLoginSuccess) onLoginSuccess(); // <-- 6. Call prop on success
+
+    } catch (err) {
+
+      showToast(err.response?.data?.message || "Registration failed", "error");
+
+    }
+
+  };
+
+
 
   return (
-    <section className="flex justify-center items-center min-h-[80vh] bg-zinc-950 text-zinc-100">
-      <div className="w-full max-w-md p-6 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-lg">
-        {/* Toggle Buttons */}
-        <div className="flex justify-center gap-4 mb-6">
-          <ButtonPrimary
-            handleClick={() => handleToggle("login")}
-            selectionStyle={
-              isLogin ? "bg-green-500 text-black" : "bg-zinc-800 text-zinc-300"
-            }
-          >
-            Login
-          </ButtonPrimary>
-          <ButtonPrimary
-            handleClick={() => handleToggle("signup")}
-            selectionStyle={
-              !isLogin ? "bg-green-500 text-black" : "bg-zinc-800 text-zinc-300"
-            }
-          >
-            Signup
-          </ButtonPrimary>
-        </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4 transition-all duration-300">
-          <h2 className="text-xl font-semibold text-center">
-            {isLogin ? "Welcome Back 👋" : "Create an Account 🚀"}
-          </h2>
+    <section className="w-full h-full flex flex-col items-center justify-center p-4">
+
+      <div className="w-full max-w-sm">
+
+        <h1 className="text-3xl font-bold text-center mb-6">
+
+          {isLogin ? "Login" : "Sign Up"}
+
+        </h1>
+
+
+
+        <form onSubmit={isLogin ? handleLogin : handleRegister} className="flex flex-col gap-4">
 
           {!isLogin && (
+
             <input
+
               type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
+
               placeholder="Username"
-              className="w-full p-2 bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+
+              value={username}
+
+              onChange={(e) => setUsername(e.target.value)}
+
+              className="bg-zinc-800 text-zinc-100 p-3 rounded-lg border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+
             />
+
           )}
 
           <input
+
             type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
+
             placeholder="Email"
-            className="w-full p-2 bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+
+            value={email}
+
+            onChange={(e) => setEmail(e.target.value)}
+
+            className="bg-zinc-800 text-zinc-100 p-3 rounded-lg border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+
           />
 
           <input
+
             type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
+
             placeholder="Password"
-            className="w-full p-2 bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+
+            value={password}
+
+            onChange={(e) => setPassword(e.target.value)}
+
+            className="bg-zinc-800 text-zinc-100 p-3 rounded-lg border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+
           />
 
-          <ButtonPrimary
-            selectionStyle="w-full py-2 bg-green-500 text-black font-semibold rounded-md hover:bg-green-400 transition"
+          <button
+
+            type="submit"
+
+            className="bg-zinc-100 text-zinc-900 font-bold p-3 rounded-lg hover:bg-zinc-300 transition-colors"
+
           >
-            {isLogin ? "Login" : "Signup"}
-          </ButtonPrimary>
+
+            {isLogin ? "Login" : "Create Account"}
+
+          </button>
+
         </form>
+
+
+
+        <p className="text-center text-zinc-400 mt-6">
+
+          {isLogin ? "Don't have an account?" : "Already have an account?"}
+
+          <button
+
+            onClick={() => setIsLogin(!isLogin)}
+
+            className="text-zinc-100 font-bold ml-2 hover:underline"
+
+          >
+
+            {isLogin ? "Sign Up" : "Login"}
+
+          </button>
+
+        </p>
+
       </div>
 
-      {/* Toast */}
-      {toast && (
-        <Toast
-          type={toast.type}
-          message={toast.message}
-          onClose={() => setToast(null)}
-        />
-      )}
     </section>
+
   );
+
 }
+
+
 
 export default Auth;
